@@ -1,16 +1,24 @@
 package com.embosfer.katas.hotel.services;
 
-import com.embosfer.katas.hotel.model.Booking;
-import com.embosfer.katas.hotel.model.EmployeeId;
-import com.embosfer.katas.hotel.model.HotelId;
-import com.embosfer.katas.hotel.model.RoomType;
+import com.embosfer.katas.hotel.model.*;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 public class BookingService {
 
-    public Optional<Booking> book(EmployeeId employeeId, HotelId hotelId, RoomType roomType, LocalDate checkIn, LocalDate checkOut) {
-        throw new RuntimeException("Not implemented");
+    private final HotelService hotelService;
+
+    public BookingService(HotelService hotelService) {
+        this.hotelService = hotelService;
+    }
+
+    public Booking book(EmployeeId employeeId, HotelId hotelId, RoomType roomType, LocalDate checkIn, LocalDate checkOut) {
+        Optional<Hotel> hotel = hotelService.findHotelBy(hotelId);
+        if (hotel.isEmpty()) {
+            return new BookingFailure();
+        }
+
+        return null;
     }
 }
