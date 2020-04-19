@@ -1,5 +1,6 @@
 package features;
 
+import com.embosfer.katas.hotel.caches.EmployeeRepository;
 import com.embosfer.katas.hotel.model.*;
 import com.embosfer.katas.hotel.services.BookingService;
 import com.embosfer.katas.hotel.services.CompanyService;
@@ -20,7 +21,7 @@ public class HotelBookingStepDef {
     @Given("the employee <{int}> from the company {string}")
     public void theEmployeeFromTheCompany(int id, String cId) {
         employeeId = EmployeeId.of(id);
-        new CompanyService().addEmployee(CompanyId.of(cId), employeeId);
+        new CompanyService(new EmployeeRepository()).addEmployee(CompanyId.of(cId), employeeId);
     }
 
     @When("the employee books the room type {string} in the hotel {string} on the dates {string} to {string}")
