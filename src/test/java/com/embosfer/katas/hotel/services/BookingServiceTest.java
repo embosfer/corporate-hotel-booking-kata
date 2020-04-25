@@ -33,17 +33,18 @@ class BookingServiceTest {
     @BeforeEach
     void setUp() {
         bookingService = new BookingService(hotelService, datesValidator);
+
+        when(datesValidator.validate(any(), any())).thenReturn(true);
     }
 
     @Test
     void returnsBookingFailureIfHotelDoesNotExist() {
 
-        when(datesValidator.validate(any(), any())).thenReturn(true);
         when(hotelService.findHotelBy(hotelId)).thenReturn(Optional.empty());
 
         Booking bookingResult = bookingService.book(EmployeeId.of(123), hotelId, null, checkIn, checkOut);
 
-        assertThatIsBookingFailureOf(bookingResult, UNKNOWN_HOTEL);
+        assertThatIsBookingFailureOf(UNKNOWN_HOTEL, bookingResult);
     }
 
     @Test
@@ -53,10 +54,10 @@ class BookingServiceTest {
 
         Booking bookingResult = bookingService.book(null, hotelId, null, checkIn, checkIn);
 
-        assertThatIsBookingFailureOf(bookingResult, BAD_DATES);
+        assertThatIsBookingFailureOf(BAD_DATES, bookingResult);
     }
 
-    private void assertThatIsBookingFailureOf(Booking bookingResult, BookingFailure.Reason unknownHotel) {
+    private void assertThatIsBookingFailureOf(BookingFailure.Reason unknownHotel, Booking bookingResult) {
         assertThat(bookingResult).isInstanceOf(BookingFailure.class);
         BookingFailure failure = (BookingFailure) bookingResult;
         assertThat(failure.reason()).isEqualTo(unknownHotel);
