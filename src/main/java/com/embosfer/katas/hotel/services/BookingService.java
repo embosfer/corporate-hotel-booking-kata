@@ -18,12 +18,12 @@ public class BookingService {
     public Booking book(EmployeeId employeeId, HotelId hotelId, RoomType roomType, LocalDate checkIn, LocalDate checkOut) {
 
         if (!datesValidator.validate(checkIn, checkOut)) {
-            return BookingFailure.ofBadDates();
+            return Booking.failureOfBadDates();
         }
 
         Optional<Hotel> hotel = hotelService.findHotelBy(hotelId);
         if (hotel.isEmpty()) {
-            return BookingFailure.ofUnknownHotel();
+            return Booking.failureOfUnknownHotel();
         }
 
         return null;

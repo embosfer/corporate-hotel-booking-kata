@@ -13,7 +13,7 @@ import io.cucumber.java.en.When;
 
 import java.time.LocalDate;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class HotelBookingStepDef {
 
@@ -34,6 +34,6 @@ public class HotelBookingStepDef {
 
     @Then("booking failure")
     public void bookingFailure() {
-        assertThat(booking).isInstanceOf(BookingFailure.class);
+        assertFalse(booking.isOk());
     }
 }

@@ -1,7 +1,6 @@
 package com.embosfer.katas.hotel.services;
 
 import com.embosfer.katas.hotel.model.Booking;
-import com.embosfer.katas.hotel.model.BookingFailure;
 import com.embosfer.katas.hotel.model.EmployeeId;
 import com.embosfer.katas.hotel.model.HotelId;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static com.embosfer.katas.hotel.model.BookingFailure.Reason.BAD_DATES;
-import static com.embosfer.katas.hotel.model.BookingFailure.Reason.UNKNOWN_HOTEL;
+import static com.embosfer.katas.hotel.model.Booking.Reason.BAD_DATES;
+import static com.embosfer.katas.hotel.model.Booking.Reason.UNKNOWN_HOTEL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -57,10 +56,8 @@ class BookingServiceTest {
         assertThatIsBookingFailureOf(BAD_DATES, bookingResult);
     }
 
-    private void assertThatIsBookingFailureOf(BookingFailure.Reason unknownHotel, Booking bookingResult) {
-        assertThat(bookingResult).isInstanceOf(BookingFailure.class);
-        BookingFailure failure = (BookingFailure) bookingResult;
-        assertThat(failure.reason()).isEqualTo(unknownHotel);
+    private void assertThatIsBookingFailureOf(Booking.Reason unknownHotel, Booking bookingResult) {
+        assertThat(bookingResult.reason()).isEqualTo(unknownHotel);
     }
 
 }

@@ -1,4 +1,32 @@
 package com.embosfer.katas.hotel.model;
 
-public interface Booking {
+public class Booking {
+
+    private final Reason reason;
+    private final boolean isOk;
+
+    private Booking(Reason reason, boolean isOk) {
+        this.reason = reason;
+        this.isOk = isOk;
+    }
+
+    public static Booking failureOfBadDates() {
+        return new Booking(Reason.BAD_DATES, false);
+    }
+
+    public static Booking failureOfUnknownHotel() {
+        return new Booking(Reason.UNKNOWN_HOTEL, false);
+    }
+
+    public Reason reason() {
+        return reason;
+    }
+
+    public boolean isOk() {
+        return isOk;
+    }
+
+    public enum Reason {
+        UNKNOWN_HOTEL, UNKNOWN_ROOM_TYPE, BAD_DATES
+    }
 }
