@@ -17,19 +17,21 @@ public class BookingService {
 
     public Booking book(EmployeeId employeeId, HotelId hotelId, RoomType roomType, LocalDate checkIn, LocalDate checkOut) {
 
+        Booking.Builder booking = new Booking.Builder().checkIn(checkIn).checkOut(checkOut);
+
         if (!datesValidator.validate(checkIn, checkOut)) {
-            return Booking.failureOfBadDates();
+            return booking.reason(Booking.Reason.BAD_DATES).build();
         }
 
         Optional<Hotel> hotel = hotelService.findHotelBy(hotelId);
         if (hotel.isEmpty()) {
-            return Booking.failureOfUnknownHotel();
+            return booking.reason(Booking.Reason.UNKNOWN_HOTEL).build();
         }
 
         if (hotel.get().availableRoomsOf(roomType) == 0) {
-            return Booking.failureOfUnavailableRoom();
+            return booking.reason(Booking.Reason.UNAVAILABLE_ROOM).build();
         }
 
-        return null;
+        return booking.reason(Booking.Reason.SUCCESS).build();
     }
 }

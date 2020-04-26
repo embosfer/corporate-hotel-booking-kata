@@ -12,3 +12,11 @@ Feature: Booking feature
     | Double | 1 |
     When the employee books the room type "Single" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
     Then booking failure of type "UNAVAILABLE_ROOM"
+
+  Scenario: A room of a certain type can be booked on a hotel
+    Given the employee <123> from the company "Acme"
+    And the hotel "Taj Mahal" with available rooms
+      | Single | 0 |
+      | Double | 1 |
+    When the employee books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
+    Then booking success
