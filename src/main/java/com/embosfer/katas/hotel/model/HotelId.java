@@ -10,4 +10,17 @@ public class HotelId {
     public static HotelId of(String id) {
         return new HotelId(id);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HotelId hotelId = (HotelId) o;
+        return id.equals(hotelId.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

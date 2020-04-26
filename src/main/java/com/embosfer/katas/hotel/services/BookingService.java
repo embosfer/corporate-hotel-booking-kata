@@ -26,6 +26,10 @@ public class BookingService {
             return Booking.failureOfUnknownHotel();
         }
 
+        if (hotel.get().availableRoomsOf(roomType) == 0) {
+            return Booking.failureOfUnavailableRoom();
+        }
+
         return null;
     }
 }

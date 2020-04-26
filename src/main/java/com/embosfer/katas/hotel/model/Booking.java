@@ -18,6 +18,10 @@ public class Booking {
         return new Booking(Reason.UNKNOWN_HOTEL, false);
     }
 
+    public static Booking failureOfUnavailableRoom() {
+        return new Booking(Reason.UNAVAILABLE_ROOM, false);
+    }
+
     public Reason reason() {
         return reason;
     }
@@ -27,6 +31,6 @@ public class Booking {
     }
 
     public enum Reason {
-        UNKNOWN_HOTEL, UNKNOWN_ROOM_TYPE, BAD_DATES
+        UNKNOWN_HOTEL, UNAVAILABLE_ROOM, BAD_DATES
     }
 }
