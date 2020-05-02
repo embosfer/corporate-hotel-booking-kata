@@ -1,5 +1,6 @@
 package features;
 
+import com.embosfer.katas.hotel.caches.BookingRepository;
 import com.embosfer.katas.hotel.caches.EmployeeRepository;
 import com.embosfer.katas.hotel.caches.HotelRepository;
 import com.embosfer.katas.hotel.model.*;
@@ -37,7 +38,7 @@ public class HotelBookingStepDef {
     public void theEmployeeBooksTheRoomTypeInTheHotelOnTheDates(String rType, String hId, String dateFrom, String dateTo) {
         checkIn = LocalDate.parse(dateFrom);
         checkOut = LocalDate.parse(dateTo);
-        booking = new BookingService(hotelService, new DatesValidator())
+        booking = new BookingService(new BookingRepository(), hotelService, new DatesValidator())
                 .book(employeeId, HotelId.of(hId), RoomType.valueOf(rType.toUpperCase()), checkIn, checkOut);
     }
 
