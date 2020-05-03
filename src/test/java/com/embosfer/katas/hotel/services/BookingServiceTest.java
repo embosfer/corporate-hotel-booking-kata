@@ -45,7 +45,7 @@ class BookingServiceTest {
     }
 
     @Test
-    void returnsBookingFailureForIncorrectDates() {
+    void returnsBookingFailureOfIncorrectDatesWhenValidatorSaysSo() {
         when(datesValidator.validate(checkIn, checkOut)).thenReturn(false);
 
         Booking bookingResult = bookingService.book(null, hotelId, null, checkIn, checkOut);
@@ -65,17 +65,17 @@ class BookingServiceTest {
     }
 
     @Test
-    void returnsBookingFailureForUnavailableRoom() {
+    void returnsBookingFailureOfUnavailableRoomTypeWhenHotelDoesNotHaveIt() {
         when(hotelService.findHotelBy(hotelId)).thenReturn(Optional.of(aHotel));
 
         Booking bookingResult = bookingService.book(null, hotelId, RoomType.SINGLE, checkIn, checkOut);
 
         assertFalse(bookingResult.isOk());
-        assertThat(bookingResult.reason()).isEqualTo(UNAVAILABLE_ROOM);
+        assertThat(bookingResult.reason()).isEqualTo(UNAVAILABLE_ROOM_TYPE);
     }
 
     @Test
-    void returnsBookingFailureForUnavailableRoomOnGivenDates() {
+    void returnsBookingFailureOfUnavailableRoomWhenNotAvailableOnGivenDates() {
         var roomType = RoomType.SINGLE;
         aHotel.addRooms(roomType, 1);
 
@@ -85,11 +85,11 @@ class BookingServiceTest {
         Booking bookingResult = bookingService.book(null, aHotel.id(), roomType, checkIn, checkOut);
 
         assertFalse(bookingResult.isOk());
-        assertThat(bookingResult.reason()).isEqualTo(UNAVAILABLE_DATES);
+        assertThat(bookingResult.reason()).isEqualTo(NO_MORE_ROOMS_AVAILABLE_ON_GIVEN_DATES);
     }
 
     @Test
-    void savesBookingUponBookingSuccess() {
+    void returnsBookingSuccessAndSavesBookingWhenNoBookingsHaveBeenMadeSoFar() {
         var roomType = RoomType.SINGLE;
         aHotel.addRooms(roomType, 1);
 
@@ -98,13 +98,47 @@ class BookingServiceTest {
 
         Booking bookingResult = bookingService.book(null, aHotel.id(), roomType, checkIn, checkOut);
 
-        assertTrue(bookingResult.isOk());
-        assertThat(bookingResult.reason()).isEqualTo(SUCCESS);
-        verify(bookingRepository).save(bookingResult);
+        assertSuccess(bookingResult);
+    }
+
+    @Test
+    void returnsBookingSuccessAndSavesBookingWhenDatesAreNotOverlapping() {
+        var roomType = RoomType.SINGLE;
+        aHotel.addRooms(roomType, 1);
+
+        when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
+        when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(List.of(aNonOverlappingBooking()));
+
+        Booking bookingResult = bookingService.book(null, aHotel.id(), roomType, checkIn, checkOut);
+
+        assertSuccess(bookingResult);
+    }
+
+    @Test
+    void returnsBookingSuccessAndSavesBookingWhenEnoughRoomsEvenIfDatesOverlap() {
+        var roomType = RoomType.SINGLE;
+        aHotel.addRooms(roomType, 2);
+
+        when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
+        when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(List.of(anExistingBookingFor(checkIn, checkOut)));
+
+        Booking bookingResult = bookingService.book(null, aHotel.id(), roomType, checkIn, checkOut);
+
+        assertSuccess(bookingResult);
     }
 
     private Booking anExistingBookingFor(LocalDate checkIn, LocalDate checkOut) {
         return new Booking.Builder().checkIn(checkIn).checkOut(checkOut).build();
+    }
+
+    private Booking aNonOverlappingBooking() {
+        return anExistingBookingFor(checkOut.plus(1, DAYS), checkOut.plus(2, DAYS));
+    }
+
+    private void assertSuccess(Booking bookingResult) {
+        assertTrue(bookingResult.isOk());
+        assertThat(bookingResult.reason()).isEqualTo(SUCCESS);
+        verify(bookingRepository).save(bookingResult);
     }
 
 }

@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HotelBookingStepDef {
 
     private final HotelService hotelService = new HotelService(new HotelRepository());
+    private final BookingService bookingService = new BookingService(new BookingRepository(), hotelService, new DatesValidator());
+
     private EmployeeId employeeId;
     private Booking booking;
     private LocalDate checkIn;
@@ -38,11 +40,10 @@ public class HotelBookingStepDef {
     public void theEmployeeBooksTheRoomTypeInTheHotelOnTheDates(String rType, String hId, String dateFrom, String dateTo) {
         checkIn = LocalDate.parse(dateFrom);
         checkOut = LocalDate.parse(dateTo);
-        booking = new BookingService(new BookingRepository(), hotelService, new DatesValidator())
-                .book(employeeId, HotelId.of(hId), RoomType.valueOf(rType.toUpperCase()), checkIn, checkOut);
+        booking = bookingService.book(employeeId, HotelId.of(hId), RoomType.valueOf(rType.toUpperCase()), checkIn, checkOut);
     }
 
-    @And("the hotel {string} with available rooms")
+    @And("the hotel {string} providing the following rooms")
     public void theHotelWithRoomTypes(String hId, Map<String, Integer> availableRooms) {
         availableRooms
                 .forEach((rType, quantity) ->

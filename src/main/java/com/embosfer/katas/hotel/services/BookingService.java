@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static com.embosfer.katas.hotel.model.Booking.Reason.*;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 public class BookingService {
 
@@ -33,19 +34,22 @@ public class BookingService {
             return booking.reason(UNKNOWN_HOTEL).build();
         }
 
-        if (hotel.get().availableRoomsOf(roomType) == 0) {
-            return booking.reason(UNAVAILABLE_ROOM).build();
+        var roomsOfType = hotel.get().numberOfRoomsOf(roomType);
+        if (roomsOfType == 0) {
+            return booking.reason(UNAVAILABLE_ROOM_TYPE).build();
         }
 
-        var bookingOverlaps = bookingRepository.findExistingBookingsFor(hotelId, roomType).stream()
-                .anyMatch(b -> b.overlaps(checkIn, checkOut));
-        if (bookingOverlaps) {
-            return booking.reason(UNAVAILABLE_DATES).build();
+        var overlappingBookings = bookingRepository.findExistingBookingsFor(hotelId, roomType)
+                .stream()
+                .filter(b -> b.overlaps(checkIn, checkOut))
+                .collect(toUnmodifiableList());
+        if (overlappingBookings.size() == roomsOfType) {
+            return booking.reason(NO_MORE_ROOMS_AVAILABLE_ON_GIVEN_DATES).build();
         }
 
-        var bookingSucess = booking.reason(SUCCESS).build();
-        bookingRepository.save(bookingSucess);
+        var bookingSuccess = booking.reason(SUCCESS).build();
+        bookingRepository.save(bookingSuccess);
 
-        return bookingSucess;
+        return bookingSuccess;
     }
 }

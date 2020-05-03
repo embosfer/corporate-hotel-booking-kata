@@ -10,7 +10,7 @@ import static java.util.Collections.emptyList;
 
 public class BookingRepository {
 
-    private Map<HotelAndRoomType, List<Booking>> bookings = new HashMap<>();
+    private final Map<HotelAndRoomType, List<Booking>> bookings = new HashMap<>();
 
     private static class HotelAndRoomType {
 

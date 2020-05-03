@@ -20,10 +20,13 @@ public class Hotel {
     }
 
     public void addRooms(RoomType roomType, int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Number of rooms cannot be <= 0");
+        }
         this.rooms.put(roomType, quantity);
     }
 
-    public int availableRoomsOf(RoomType roomType) {
+    public int numberOfRoomsOf(RoomType roomType) {
         return rooms.getOrDefault(roomType, 0);
     }
 
