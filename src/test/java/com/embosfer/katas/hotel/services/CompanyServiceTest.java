@@ -3,7 +3,6 @@ package com.embosfer.katas.hotel.services;
 import com.embosfer.katas.hotel.caches.EmployeeRepository;
 import com.embosfer.katas.hotel.model.CompanyId;
 import com.embosfer.katas.hotel.model.EmployeeId;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,10 +18,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CompanyServiceTest {
 
+    static final CompanyId A_COMPANY = CompanyId.of("Acme");
+    static final EmployeeId AN_EMPLOYEE = EmployeeId.of(123);
+
     @Mock EmployeeRepository employeeRepository;
     CompanyService companyService;
-    public static final CompanyId A_COMPANY = CompanyId.of("Acme");
-    public static final EmployeeId AN_EMPLOYEE = EmployeeId.of(123);
 
     @BeforeEach
     void setUp() {

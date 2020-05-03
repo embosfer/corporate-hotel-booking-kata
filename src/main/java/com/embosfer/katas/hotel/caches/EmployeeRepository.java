@@ -3,10 +3,9 @@ package com.embosfer.katas.hotel.caches;
 import com.embosfer.katas.hotel.model.CompanyId;
 import com.embosfer.katas.hotel.model.EmployeeId;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
+
+import static java.util.Collections.emptyList;
 
 public class EmployeeRepository {
 
@@ -23,6 +22,6 @@ public class EmployeeRepository {
     }
 
     public Collection<EmployeeId> findEmployeesOf(CompanyId companyId) {
-        return employees.get(companyId);
+        return employees.getOrDefault(companyId, emptyList());
     }
 }
