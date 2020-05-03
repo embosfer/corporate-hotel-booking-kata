@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class HotelRepository {
 
-    private Map<HotelId, Hotel> hotels = new HashMap<>();
+    private final Map<HotelId, Hotel> hotels = new HashMap<>();
 
     public Optional<Hotel> findHotelBy(HotelId hotelId) {
         return Optional.ofNullable(hotels.get(hotelId));

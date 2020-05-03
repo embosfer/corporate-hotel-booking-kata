@@ -13,8 +13,8 @@ class HotelTest {
         assertThat(hotel.numberOfRoomsOf(RoomType.SINGLE)).isEqualTo(0);
         assertThat(hotel.numberOfRoomsOf(RoomType.DOUBLE)).isEqualTo(0);
 
-        hotel.addRooms(RoomType.SINGLE, 5);
-        hotel.addRooms(RoomType.DOUBLE, 42);
+        hotel.setRoomsOf(RoomType.SINGLE, 5);
+        hotel.setRoomsOf(RoomType.DOUBLE, 42);
         assertThat(hotel.numberOfRoomsOf(RoomType.SINGLE)).isEqualTo(5);
         assertThat(hotel.numberOfRoomsOf(RoomType.DOUBLE)).isEqualTo(42);
     }
@@ -24,10 +24,10 @@ class HotelTest {
         Hotel hotel = Hotel.of(HotelId.of("id"));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> hotel.addRooms(RoomType.SINGLE, 0));
+                .isThrownBy(() -> hotel.setRoomsOf(RoomType.SINGLE, 0));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> hotel.addRooms(RoomType.SINGLE, -1));
+                .isThrownBy(() -> hotel.setRoomsOf(RoomType.SINGLE, -1));
     }
 
 }

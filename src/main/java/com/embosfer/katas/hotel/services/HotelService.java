@@ -20,7 +20,7 @@ public class HotelService {
 
     public void setRoomType(HotelId hotelId, RoomType roomType, int quantity) {
         Hotel hotel = hotelRepository.findHotelBy(hotelId).orElse(Hotel.of(hotelId));
-        hotel.addRooms(roomType, quantity);
+        hotel.setRoomsOf(roomType, quantity);
         hotelRepository.save(hotel);
     }
 }

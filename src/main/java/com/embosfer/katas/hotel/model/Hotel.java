@@ -19,7 +19,7 @@ public class Hotel {
         return id;
     }
 
-    public void addRooms(RoomType roomType, int quantity) {
+    public void setRoomsOf(RoomType roomType, int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Number of rooms cannot be <= 0");
         }

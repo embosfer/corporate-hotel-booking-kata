@@ -19,8 +19,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class HotelServiceTest {
 
-    @Mock
-    HotelRepository hotelRepository;
+    @Mock HotelRepository hotelRepository;
     HotelService hotelService;
 
     @BeforeEach
@@ -57,7 +56,7 @@ class HotelServiceTest {
 
     private Hotel hotel(HotelId hotelId, RoomType roomType, int rooms) {
         Hotel hotel = Hotel.of(hotelId);
-        hotel.addRooms(roomType, rooms);
+        hotel.setRoomsOf(roomType, rooms);
         return hotel;
     }
 }

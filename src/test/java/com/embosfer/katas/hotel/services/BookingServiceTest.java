@@ -77,7 +77,7 @@ class BookingServiceTest {
     @Test
     void returnsBookingFailureOfUnavailableRoomWhenNotAvailableOnGivenDates() {
         var roomType = RoomType.SINGLE;
-        aHotel.addRooms(roomType, 1);
+        aHotel.setRoomsOf(roomType, 1);
 
         when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
         when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(List.of(anExistingBookingFor(checkIn, checkOut)));
@@ -91,7 +91,7 @@ class BookingServiceTest {
     @Test
     void returnsBookingSuccessAndSavesBookingWhenNoBookingsHaveBeenMadeSoFar() {
         var roomType = RoomType.SINGLE;
-        aHotel.addRooms(roomType, 1);
+        aHotel.setRoomsOf(roomType, 1);
 
         when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
         when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(emptyList());
@@ -104,7 +104,7 @@ class BookingServiceTest {
     @Test
     void returnsBookingSuccessAndSavesBookingWhenDatesAreNotOverlapping() {
         var roomType = RoomType.SINGLE;
-        aHotel.addRooms(roomType, 1);
+        aHotel.setRoomsOf(roomType, 1);
 
         when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
         when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(List.of(aNonOverlappingBooking()));
@@ -117,7 +117,7 @@ class BookingServiceTest {
     @Test
     void returnsBookingSuccessAndSavesBookingWhenEnoughRoomsEvenIfDatesOverlap() {
         var roomType = RoomType.SINGLE;
-        aHotel.addRooms(roomType, 2);
+        aHotel.setRoomsOf(roomType, 2);
 
         when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
         when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(List.of(anExistingBookingFor(checkIn, checkOut)));
