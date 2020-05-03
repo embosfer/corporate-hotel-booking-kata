@@ -18,7 +18,7 @@ class EmployeeRepositoryTest {
         repository.addEmployee(companyId, employeeId);
         repository.addEmployee(companyId, employeeId);
 
-        assertThat(repository.employeesOf(companyId)).containsExactly(employeeId);
+        assertThat(repository.findEmployeesOf(companyId)).containsExactly(employeeId);
     }
 
     @Test
@@ -34,8 +34,8 @@ class EmployeeRepositoryTest {
         repository.addEmployee(c1, e2);
         repository.addEmployee(c2, e3);
 
-        assertThat(repository.employeesOf(c1)).containsExactlyInAnyOrder(e1, e2);
-        assertThat(repository.employeesOf(c2)).containsExactly(e3);
+        assertThat(repository.findEmployeesOf(c1)).containsExactlyInAnyOrder(e1, e2);
+        assertThat(repository.findEmployeesOf(c2)).containsExactly(e3);
     }
 
 }

@@ -13,6 +13,12 @@ public class CompanyService {
     }
 
     public void addEmployee(CompanyId companyId, EmployeeId employeeId) {
+        if (employeeRepository.findEmployeesOf(companyId)
+                .stream()
+                .anyMatch(employee -> employee.equals(employeeId))) {
+            throw new EmployeeAlreadyExistsException();
+        }
+
         employeeRepository.addEmployee(companyId, employeeId);
     }
 }

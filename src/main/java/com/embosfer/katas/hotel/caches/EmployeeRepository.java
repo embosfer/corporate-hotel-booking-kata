@@ -22,7 +22,7 @@ public class EmployeeRepository {
         });
     }
 
-    public Collection<EmployeeId> employeesOf(CompanyId companyId) {
+    public Collection<EmployeeId> findEmployeesOf(CompanyId companyId) {
         return employees.get(companyId);
     }
 }
