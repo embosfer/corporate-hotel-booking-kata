@@ -7,7 +7,7 @@
 
     <properties>
         <cucumber.version>5.1.2</cucumber.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.source>13</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <junit-jupiter.version>5.5.2</junit-jupiter.version>
         <junit-platform.version>1.5.2</junit-platform.version>
@@ -75,7 +75,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <release>11</release>
+                    <release>13</release>
                 </configuration>
             </plugin>
             <plugin>
