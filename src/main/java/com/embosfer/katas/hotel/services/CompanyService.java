@@ -1,24 +1,22 @@
 package com.embosfer.katas.hotel.services;
 
-import com.embosfer.katas.hotel.caches.EmployeeRepository;
+import com.embosfer.katas.hotel.caches.CompanyRepository;
 import com.embosfer.katas.hotel.model.CompanyId;
 import com.embosfer.katas.hotel.model.EmployeeId;
 
 public class CompanyService {
 
-    private final EmployeeRepository employeeRepository;
+    private final CompanyRepository companyRepository;
 
-    public CompanyService(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public CompanyService(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
     }
 
     public void addEmployee(CompanyId companyId, EmployeeId employeeId) {
-        if (employeeRepository.findEmployeesOf(companyId)
-                .stream()
-                .anyMatch(employee -> employee.equals(employeeId))) {
+        if (companyRepository.findCompanyFor(employeeId).isPresent()) {
             throw new EmployeeAlreadyExistsException();
         }
 
-        employeeRepository.addEmployee(companyId, employeeId);
+        companyRepository.addEmployee(companyId, employeeId);
     }
 }

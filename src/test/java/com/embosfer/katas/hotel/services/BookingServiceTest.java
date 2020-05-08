@@ -1,10 +1,7 @@
 package com.embosfer.katas.hotel.services;
 
 import com.embosfer.katas.hotel.caches.BookingRepository;
-import com.embosfer.katas.hotel.model.Booking;
-import com.embosfer.katas.hotel.model.Hotel;
-import com.embosfer.katas.hotel.model.HotelId;
-import com.embosfer.katas.hotel.model.RoomType;
+import com.embosfer.katas.hotel.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +25,7 @@ import static org.mockito.Mockito.when;
 class BookingServiceTest {
 
     @Mock HotelService hotelService;
+    @Mock BookingPolicyService bookingPolicyService;
     @Mock DatesValidator datesValidator;
     @Mock BookingRepository bookingRepository;
     BookingService bookingService;
@@ -36,10 +34,11 @@ class BookingServiceTest {
     LocalDate checkOut = LocalDate.EPOCH.plus(1, DAYS);
     HotelId hotelId = HotelId.of("a-hotel");
     Hotel aHotel = Hotel.of(hotelId);;
+    EmployeeId employeeId;
 
     @BeforeEach
     void setUp() {
-        bookingService = new BookingService(bookingRepository, hotelService, datesValidator);
+        bookingService = new BookingService(bookingRepository, hotelService, bookingPolicyService, datesValidator);
 
         when(datesValidator.validate(checkIn, checkOut)).thenReturn(true);
     }
@@ -75,11 +74,26 @@ class BookingServiceTest {
     }
 
     @Test
+    void returnsBookingFailureOfBookingDisallowedByPolicyIfBookingPolicyServiceSaysSo() {
+        var roomType = RoomType.SINGLE;
+        aHotel.setRoomsOf(roomType, 1);
+
+        when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
+        when(bookingPolicyService.isBookingAllowed(employeeId, roomType)).thenReturn(false);
+
+        Booking bookingResult = bookingService.book(null, hotelId, roomType, checkIn, checkOut);
+
+        assertFalse(bookingResult.isOk());
+        assertThat(bookingResult.reason()).isEqualTo(Booking.Reason.BOOKING_DISALLOWED_BY_POLICY);
+    }
+
+    @Test
     void returnsBookingFailureOfUnavailableRoomWhenNotAvailableOnGivenDates() {
         var roomType = RoomType.SINGLE;
         aHotel.setRoomsOf(roomType, 1);
 
         when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
+        when(bookingPolicyService.isBookingAllowed(employeeId, roomType)).thenReturn(true);
         when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(List.of(anExistingBookingFor(checkIn, checkOut)));
 
         Booking bookingResult = bookingService.book(null, aHotel.id(), roomType, checkIn, checkOut);
@@ -94,6 +108,7 @@ class BookingServiceTest {
         aHotel.setRoomsOf(roomType, 1);
 
         when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
+        when(bookingPolicyService.isBookingAllowed(employeeId, roomType)).thenReturn(true);
         when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(emptyList());
 
         Booking bookingResult = bookingService.book(null, aHotel.id(), roomType, checkIn, checkOut);
@@ -107,6 +122,7 @@ class BookingServiceTest {
         aHotel.setRoomsOf(roomType, 1);
 
         when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
+        when(bookingPolicyService.isBookingAllowed(employeeId, roomType)).thenReturn(true);
         when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(List.of(aNonOverlappingBooking()));
 
         Booking bookingResult = bookingService.book(null, aHotel.id(), roomType, checkIn, checkOut);
@@ -120,6 +136,7 @@ class BookingServiceTest {
         aHotel.setRoomsOf(roomType, 2);
 
         when(hotelService.findHotelBy(aHotel.id())).thenReturn(Optional.of(aHotel));
+        when(bookingPolicyService.isBookingAllowed(employeeId, roomType)).thenReturn(true);
         when(bookingRepository.findExistingBookingsFor(aHotel.id(), roomType)).thenReturn(List.of(anExistingBookingFor(checkIn, checkOut)));
 
         Booking bookingResult = bookingService.book(null, aHotel.id(), roomType, checkIn, checkOut);

@@ -13,11 +13,13 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
     private final HotelService hotelService;
+    private final BookingPolicyService bookingPolicyService;
     private final DatesValidator datesValidator;
 
-    public BookingService(BookingRepository bookingRepository, HotelService hotelService, DatesValidator datesValidator) {
+    public BookingService(BookingRepository bookingRepository, HotelService hotelService, BookingPolicyService bookingPolicyService, DatesValidator datesValidator) {
         this.bookingRepository = bookingRepository;
         this.hotelService = hotelService;
+        this.bookingPolicyService = bookingPolicyService;
         this.datesValidator = datesValidator;
     }
 
@@ -37,6 +39,10 @@ public class BookingService {
         var roomsOfType = hotel.get().numberOfRoomsOf(roomType);
         if (roomsOfType == 0) {
             return booking.reason(UNAVAILABLE_ROOM_TYPE).build();
+        }
+
+        if (!bookingPolicyService.isBookingAllowed(employeeId, roomType)) {
+            return booking.reason(BOOKING_DISALLOWED_BY_POLICY).build();
         }
 
         var overlappingBookings = bookingRepository.findExistingBookingsFor(hotelId, roomType)
