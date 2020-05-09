@@ -12,6 +12,21 @@ Feature: Booking feature
     When the employee books the room type "Single" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
     Then booking failure of type "UNAVAILABLE_ROOM_TYPE"
 
+  Scenario: A room of a certain type can be booked on a hotel when it provides it, there is no policy constraints it and is available on the given dates
+    Given the employee <123> from the company "Acme" without policy
+    And the hotel "Taj Mahal" providing the following rooms
+      | Double | 2 |
+    When the employee books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
+    Then booking success
+
+  Scenario: A room of a certain type cannot be booked on a hotel if the employee booking policy prohibits it
+    Given the employee <123> from the company "Acme" with an employee policy allowing only bookings of room types
+      | Twin |
+    And the hotel "Taj Mahal" providing the following rooms
+      | Double | 1 |
+    When the employee books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
+    Then booking failure of type "BOOKING_DISALLOWED_BY_POLICY"
+
   Scenario: A room of a certain type cannot be booked on a hotel if the company booking policy prohibits it
     Given the employee <123> from the company "Acme" with a company policy allowing only bookings of room types
       | Twin |
@@ -19,13 +34,6 @@ Feature: Booking feature
       | Double | 1 |
     When the employee books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
     Then booking failure of type "BOOKING_DISALLOWED_BY_POLICY"
-
-  Scenario: A room of a certain type can be booked on a hotel when it provides it, there is no policy constraints it and is available on the given dates
-    Given the employee <123> from the company "Acme" without policy
-    And the hotel "Taj Mahal" providing the following rooms
-      | Double | 2 |
-    When the employee books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
-    Then booking success
 
   Scenario: A room of a certain type can be booked on a hotel when it provides it, the company policy allows it and is available on the given dates
     Given the employee <123> from the company "Acme" with a company policy allowing only bookings of room types

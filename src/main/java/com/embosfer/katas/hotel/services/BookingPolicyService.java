@@ -7,8 +7,8 @@ import com.embosfer.katas.hotel.model.EmployeeId;
 import com.embosfer.katas.hotel.model.RoomType;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 public class BookingPolicyService {
 
@@ -24,17 +24,30 @@ public class BookingPolicyService {
         bookingPolicyRepository.save(companyId, roomTypesAllowed);
     }
 
+    public void setEmployeePolicy(EmployeeId employeeId, Collection<RoomType> roomTypesAllowed) {
+        bookingPolicyRepository.save(employeeId, roomTypesAllowed);
+    }
+
     public boolean isBookingAllowed(EmployeeId employeeId, RoomType roomType) {
-        List<RoomType> roomsAllowed = companyRepository.findCompanyFor(employeeId)
+        var roomsAllowedForEmployee = bookingPolicyRepository.findRoomsAllowedFor(employeeId);
+        if (policySet(roomsAllowedForEmployee)) {
+            return roomsAllowedForEmployee.contains(roomType);
+        }
+
+        var roomsAllowedByCompany = companyRepository.findCompanyFor(employeeId)
                 .stream()
                 .map(bookingPolicyRepository::findRoomsAllowedFor)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(toUnmodifiableList());
 
-        if (roomsAllowed.isEmpty()) {
-            return true;
+        if (policySet(roomsAllowedByCompany)) {
+            return roomsAllowedByCompany.contains(roomType);
         } else {
-            return roomsAllowed.contains(roomType);
+            return true;
         }
+    }
+
+    private boolean policySet(Collection<RoomType> roomsAllowed) {
+        return !roomsAllowed.isEmpty();
     }
 }
