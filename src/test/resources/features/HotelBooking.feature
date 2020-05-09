@@ -34,12 +34,6 @@ Feature: Booking feature
       | Double | 2 |
     When the employee books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
     Then booking success
-    When the employee books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
-    Then booking success
-    When the employee books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
-    Then booking failure of type "NO_MORE_ROOMS_AVAILABLE_ON_GIVEN_DATES"
-    When the employee books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-16" to "2020-04-17"
-    Then booking success
 
   Scenario: A change in quantity of rooms should not not affect existing bookings. They will only affect new bookings, made after the change.
     Given the employee <123> from the company "Acme" with a policy allowing only bookings of room types
