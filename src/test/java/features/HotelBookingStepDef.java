@@ -32,25 +32,25 @@ public class HotelBookingStepDef {
     private Booking booking;
     private LocalDate checkIn;
     private LocalDate checkOut;
+    private CompanyId companyId;
 
-    @Given("the employee <{int}> from the company {string} with an employee policy allowing only bookings of room types")
-    public void theEmployeeFromTheCompanyWithAnEmployeePolicy(int id, String cId, List<String> roomTypes) {
-        theEmployeeFromTheCompany(id, cId);
-        var roomTypesAllowed = roomTypes.stream().map(this::roomTypeFrom).collect(toUnmodifiableList());
-        bookingPolicyService.setCompanyPolicy(CompanyId.of(cId), roomTypesAllowed);
-    }
-
-    @Given("the employee <{int}> from the company {string} with a company policy allowing only bookings of room types")
-    public void theEmployeeFromTheCompanyWithACompanyPolicy(int id, String cId, List<String> roomTypes) {
-        theEmployeeFromTheCompany(id, cId);
-        var roomTypesAllowed = roomTypes.stream().map(this::roomTypeFrom).collect(toUnmodifiableList());
-        bookingPolicyService.setEmployeePolicy(EmployeeId.of(id), roomTypesAllowed);
-    }
-
-    @Given("the employee <{int}> from the company {string} without policy")
+    @Given("the employee <{int}> from the company {string}")
     public void theEmployeeFromTheCompany(int id, String cId) {
         employeeId = EmployeeId.of(id);
-        companyService.addEmployee(CompanyId.of(cId), employeeId);
+        companyId = CompanyId.of(cId);
+        companyService.addEmployee(companyId, employeeId);
+    }
+
+    @And("with employee policy allowing only bookings of room types")
+    public void withEmployeePolicyAllowingOnlyBookingsOfRoomTypes(List<String> roomTypes) {
+        var roomTypesAllowed = roomTypes.stream().map(this::roomTypeFrom).collect(toUnmodifiableList());
+        bookingPolicyService.setEmployeePolicy(employeeId, roomTypesAllowed);
+    }
+
+    @And("with company policy allowing only bookings of room types")
+    public void withCompanyPolicyAllowingOnlyBookingOfRoomTypes(List<String> roomTypes) {
+        var roomTypesAllowed = roomTypes.stream().map(this::roomTypeFrom).collect(toUnmodifiableList());
+        bookingPolicyService.setCompanyPolicy(companyId, roomTypesAllowed);
     }
 
     private RoomType roomTypeFrom(String rType) {
