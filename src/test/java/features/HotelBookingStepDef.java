@@ -33,7 +33,7 @@ public class HotelBookingStepDef {
     private LocalDate checkIn;
     private LocalDate checkOut;
 
-    @Given("the employee <{int}> from the company {string} with a policy allowing only bookings of room types")
+    @Given("the employee <{int}> from the company {string} with a company policy allowing only bookings of room types")
     public void theEmployeeFromTheCompanyWithAPolicy(int id, String cId, List<String> roomTypes) {
         theEmployeeFromTheCompany(id, cId);
         var roomTypesAllowed = roomTypes.stream().map(this::roomTypeFrom).collect(toUnmodifiableList());
