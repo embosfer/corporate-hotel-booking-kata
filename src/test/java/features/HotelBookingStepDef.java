@@ -23,10 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HotelBookingStepDef {
 
     private final CompanyRepository companyRepository = new CompanyRepository();
-    private final CompanyService companyService = new CompanyService(companyRepository);
+    private final BookingPolicyRepository bookingPolicyRepository = new BookingPolicyRepository();
+    private final BookingRepository bookingRepository = new BookingRepository();
+
+    private final CompanyService companyService = new CompanyService(companyRepository, bookingPolicyRepository, bookingRepository);
     private final HotelService hotelService = new HotelService(new HotelRepository());
-    private final BookingPolicyService bookingPolicyService = new BookingPolicyService(new BookingPolicyRepository(), companyRepository);
-    private final BookingService bookingService = new BookingService(new BookingRepository(), hotelService, bookingPolicyService, new DatesValidator());
+    private final BookingPolicyService bookingPolicyService = new BookingPolicyService(bookingPolicyRepository, companyRepository);
+    private final BookingService bookingService = new BookingService(bookingRepository, hotelService, bookingPolicyService, new DatesValidator());
 
     private Booking booking;
     private LocalDate checkIn;
@@ -67,6 +70,11 @@ public class HotelBookingStepDef {
         availableRooms
                 .forEach((rType, quantity) ->
                         hotelService.setRoomType(HotelId.of(hId), roomTypeFrom(rType), quantity));
+    }
+
+    @When("the employee <{int}> is deleted from the system")
+    public void theEmployeeIsDeletedFromTheSystem(int id) {
+        companyService.deleteEmployee(EmployeeId.of(id));
     }
 
     @Then("booking failure of type {string}")

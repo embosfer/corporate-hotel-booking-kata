@@ -89,3 +89,16 @@ Feature: Booking feature
       | Double | 2 |
     When the employee <123> books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
     Then booking success
+
+  Scenario: When deleting an employee, all the bookings and policies associated to the employee should also be deleted from the system.
+    Given the employee <123> from the company "Acme"
+    And the employee <123> with employee policy allowing only bookings of room types
+      | Double |
+    And the hotel "Taj Mahal" providing the following rooms
+      | Double | 1 |
+    When the employee <123> books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
+    Then booking success
+    When the employee <123> is deleted from the system
+    Given the employee <456> from the company "Acme"
+    When the employee <456> books the room type "Double" in the hotel "Taj Mahal" on the dates "2020-04-15" to "2020-04-16"
+    Then booking success

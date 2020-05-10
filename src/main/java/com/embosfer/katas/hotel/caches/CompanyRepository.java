@@ -15,8 +15,11 @@ public class CompanyRepository {
         employees.put(employeeId, companyId);
     }
 
+    public void deleteEmployee(EmployeeId employeeId) {
+        employees.remove(employeeId);
+    }
+
     public Optional<CompanyId> findCompanyFor(EmployeeId employeeId) {
         return Optional.ofNullable(employees.get(employeeId));
     }
-
 }

@@ -29,4 +29,8 @@ public class BookingPolicyRepository {
     public Collection<RoomType> findRoomsAllowedFor(EmployeeId employeeId) {
         return roomsAllowedForEmployee.getOrDefault(employeeId, emptyList());
     }
+
+    public void deletePolicyOf(EmployeeId employeeId) {
+        roomsAllowedForEmployee.remove(employeeId);
+    }
 }

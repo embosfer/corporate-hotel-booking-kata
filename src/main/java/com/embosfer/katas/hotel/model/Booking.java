@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class Booking {
 
+    private final EmployeeId employeeId;
     private final HotelId hotelId;
     private final RoomType roomType;
     private final Reason reason;
@@ -11,13 +12,18 @@ public class Booking {
     private final LocalDate checkIn;
     private final LocalDate checkOut;
 
-    private Booking(HotelId hotelId, RoomType roomType, Reason reason, LocalDate checkIn, LocalDate checkOut) {
+    private Booking(EmployeeId employeeId, HotelId hotelId, RoomType roomType, Reason reason, LocalDate checkIn, LocalDate checkOut) {
+        this.employeeId = employeeId;
         this.hotelId = hotelId;
         this.roomType = roomType;
         this.reason = reason;
         this.isOk = reason == Reason.SUCCESS;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
+    }
+
+    public EmployeeId employeeId() {
+        return employeeId;
     }
 
     public Reason reason() {
@@ -66,6 +72,7 @@ public class Booking {
         private Reason reason;
         private RoomType roomType;
         private HotelId hotelId;
+        private EmployeeId employeeId;
 
         public Booking.Builder checkIn(LocalDate checkIn) {
             this.checkIn = checkIn;
@@ -92,8 +99,13 @@ public class Booking {
             return this;
         }
 
+        public Builder employee(EmployeeId employeeId) {
+            this.employeeId = employeeId;
+            return this;
+        }
+
         public Booking build() {
-            return new Booking(hotelId, roomType, reason, checkIn, checkOut);
+            return new Booking(employeeId, hotelId, roomType, reason, checkIn, checkOut);
         }
     }
 }

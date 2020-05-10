@@ -1,6 +1,7 @@
 package com.embosfer.katas.hotel.caches;
 
 import com.embosfer.katas.hotel.model.Booking;
+import com.embosfer.katas.hotel.model.EmployeeId;
 import com.embosfer.katas.hotel.model.HotelId;
 import com.embosfer.katas.hotel.model.RoomType;
 import org.junit.jupiter.api.Test;
@@ -33,8 +34,29 @@ class BookingRepositoryTest {
         assertThat(repository.findExistingBookingsFor(HotelId.of("id-2"), RoomType.TWIN)).containsExactly(twinRoomBooking);
     }
 
+    @Test
+    void canDeleteBookingsOfEmployees() {
+        var employee1Booking = aBookingFor(HotelId.of("id-1"), RoomType.SINGLE, EmployeeId.of(1));
+        var employee2Booking = aBookingFor(HotelId.of("id-1"), RoomType.SINGLE, EmployeeId.of(2));
+        repository.save(employee1Booking);
+        repository.save(employee2Booking);
+
+        assertThat(repository.findExistingBookingsFor(HotelId.of("id-1"), RoomType.SINGLE))
+                .containsExactly(employee1Booking, employee2Booking);
+
+        repository.deleteBookingsOf(EmployeeId.of(1));
+        assertThat(repository.findExistingBookingsFor(HotelId.of("id-1"), RoomType.SINGLE)).containsExactly(employee2Booking);
+
+        repository.deleteBookingsOf(EmployeeId.of(2));
+        assertThat(repository.findExistingBookingsFor(HotelId.of("id-1"), RoomType.SINGLE)).isEmpty();
+    }
+
     private Booking aBookingFor(HotelId hotelId, RoomType roomType) {
         return new Booking.Builder().hotel(hotelId).roomType(roomType).build();
+    }
+
+    private Booking aBookingFor(HotelId hotelId, RoomType roomType, EmployeeId employeeId) {
+        return new Booking.Builder().hotel(hotelId).roomType(roomType).employee(employeeId).build();
     }
 
 }

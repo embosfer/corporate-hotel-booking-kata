@@ -1,5 +1,7 @@
 package com.embosfer.katas.hotel.services;
 
+import com.embosfer.katas.hotel.caches.BookingPolicyRepository;
+import com.embosfer.katas.hotel.caches.BookingRepository;
 import com.embosfer.katas.hotel.caches.CompanyRepository;
 import com.embosfer.katas.hotel.model.CompanyId;
 import com.embosfer.katas.hotel.model.EmployeeId;
@@ -9,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,13 +23,14 @@ class CompanyServiceTest {
     static final CompanyId A_COMPANY = CompanyId.of("Acme");
     static final EmployeeId AN_EMPLOYEE = EmployeeId.of(123);
 
-    @Mock
-    CompanyRepository companyRepository;
+    @Mock CompanyRepository companyRepository;
+    @Mock BookingPolicyRepository bookingPolicyRepository;
+    @Mock BookingRepository bookingRepository;
     CompanyService companyService;
 
     @BeforeEach
     void setUp() {
-        companyService = new CompanyService(companyRepository);
+        companyService = new CompanyService(companyRepository, bookingPolicyRepository, bookingRepository);
     }
 
     @Test
@@ -44,5 +46,14 @@ class CompanyServiceTest {
 
         assertThatThrownBy(() -> companyService.addEmployee(A_COMPANY, AN_EMPLOYEE))
                 .isInstanceOf(EmployeeAlreadyExistsException.class);
+    }
+
+    @Test
+    void whenEmployeeGetsDeletedThenEmployeeGetsDeletedFromRepoAndPoliciesAndBookingsForThatEmployeeGetDeletedToo() {
+        companyService.deleteEmployee(AN_EMPLOYEE);
+
+        verify(companyRepository).deleteEmployee(AN_EMPLOYEE);
+        verify(bookingPolicyRepository).deletePolicyOf(AN_EMPLOYEE);
+        verify(bookingRepository).deleteBookingsOf(AN_EMPLOYEE);
     }
 }

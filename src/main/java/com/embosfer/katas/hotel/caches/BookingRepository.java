@@ -1,6 +1,7 @@
 package com.embosfer.katas.hotel.caches;
 
 import com.embosfer.katas.hotel.model.Booking;
+import com.embosfer.katas.hotel.model.EmployeeId;
 import com.embosfer.katas.hotel.model.HotelId;
 import com.embosfer.katas.hotel.model.RoomType;
 
@@ -38,6 +39,7 @@ public class BookingRepository {
         public int hashCode() {
             return Objects.hash(hotelId, roomType);
         }
+
     }
 
     public List<Booking> findExistingBookingsFor(HotelId hotelId, RoomType roomType) {
@@ -52,5 +54,10 @@ public class BookingRepository {
             bookings.add(booking);
             return bookings;
         });
+    }
+
+    public void deleteBookingsOf(EmployeeId employeeId) {
+        // this could be terribly slow in a real hotel booking system, but it'll do for the kata
+        bookings.forEach((h, bs) -> bs.removeIf(booking -> booking.employeeId().equals(employeeId)));
     }
 }

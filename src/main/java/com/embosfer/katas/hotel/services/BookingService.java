@@ -25,7 +25,7 @@ public class BookingService {
 
     public Booking book(EmployeeId employeeId, HotelId hotelId, RoomType roomType, LocalDate checkIn, LocalDate checkOut) {
 
-        Booking.Builder booking = new Booking.Builder().hotel(hotelId).roomType(roomType).checkIn(checkIn).checkOut(checkOut);
+        Booking.Builder booking = new Booking.Builder().employee(employeeId).hotel(hotelId).roomType(roomType).checkIn(checkIn).checkOut(checkOut);
 
         if (!datesValidator.validate(checkIn, checkOut)) {
             return booking.reason(BAD_DATES).build();

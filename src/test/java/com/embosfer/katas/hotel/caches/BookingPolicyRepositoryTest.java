@@ -45,4 +45,13 @@ class BookingPolicyRepositoryTest {
         assertThat(repository.findRoomsAllowedFor(AN_EMPLOYEE_ID)).containsExactly(RoomType.SINGLE, RoomType.DOUBLE);
     }
 
+    @Test
+    void canDeleteBookingPolicyOfAnEmployee() {
+        canSaveAnEmployeeBookingPolicyAndQueryForItLater();
+
+        repository.deletePolicyOf(AN_EMPLOYEE_ID);
+
+        returnsEmptyListIfNoRoomsHaveBeenSavedForAnEmployee();
+    }
+
 }
