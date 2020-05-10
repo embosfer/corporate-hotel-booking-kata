@@ -1,11 +1,19 @@
 package features;
 
-import com.embosfer.katas.hotel.caches.BookingPolicyRepository;
-import com.embosfer.katas.hotel.caches.BookingRepository;
-import com.embosfer.katas.hotel.caches.CompanyRepository;
-import com.embosfer.katas.hotel.caches.HotelRepository;
-import com.embosfer.katas.hotel.model.*;
-import com.embosfer.katas.hotel.services.*;
+import com.embosfer.katas.hotel.booking.Booking;
+import com.embosfer.katas.hotel.booking.BookingService;
+import com.embosfer.katas.hotel.booking.DatesValidator;
+import com.embosfer.katas.hotel.company.CompanyId;
+import com.embosfer.katas.hotel.company.CompanyService;
+import com.embosfer.katas.hotel.company.EmployeeId;
+import com.embosfer.katas.hotel.hotel.HotelId;
+import com.embosfer.katas.hotel.hotel.HotelService;
+import com.embosfer.katas.hotel.hotel.RoomType;
+import com.embosfer.katas.hotel.policy.BookingPolicyRepository;
+import com.embosfer.katas.hotel.booking.BookingRepository;
+import com.embosfer.katas.hotel.company.CompanyRepository;
+import com.embosfer.katas.hotel.hotel.HotelRepository;
+import com.embosfer.katas.hotel.policy.BookingPolicyService;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
