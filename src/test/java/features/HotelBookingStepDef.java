@@ -28,7 +28,6 @@ public class HotelBookingStepDef {
     private final BookingPolicyService bookingPolicyService = new BookingPolicyService(new BookingPolicyRepository(), companyRepository);
     private final BookingService bookingService = new BookingService(new BookingRepository(), hotelService, bookingPolicyService, new DatesValidator());
 
-    private EmployeeId employeeId;
     private Booking booking;
     private LocalDate checkIn;
     private LocalDate checkOut;
@@ -36,15 +35,14 @@ public class HotelBookingStepDef {
 
     @Given("the employee <{int}> from the company {string}")
     public void theEmployeeFromTheCompany(int id, String cId) {
-        employeeId = EmployeeId.of(id);
         companyId = CompanyId.of(cId);
-        companyService.addEmployee(companyId, employeeId);
+        companyService.addEmployee(companyId, EmployeeId.of(id));
     }
 
-    @And("with employee policy allowing only bookings of room types")
-    public void withEmployeePolicyAllowingOnlyBookingsOfRoomTypes(List<String> roomTypes) {
+    @And("the employee <{int}> with employee policy allowing only bookings of room types")
+    public void withEmployeePolicyAllowingOnlyBookingsOfRoomTypes(int id, List<String> roomTypes) {
         var roomTypesAllowed = roomTypes.stream().map(this::roomTypeFrom).collect(toUnmodifiableList());
-        bookingPolicyService.setEmployeePolicy(employeeId, roomTypesAllowed);
+        bookingPolicyService.setEmployeePolicy(EmployeeId.of(id), roomTypesAllowed);
     }
 
     @And("with company policy allowing only bookings of room types")
@@ -57,11 +55,11 @@ public class HotelBookingStepDef {
         return RoomType.valueOf(rType.toUpperCase());
     }
 
-    @When("the employee books the room type {string} in the hotel {string} on the dates {string} to {string}")
-    public void theEmployeeBooksTheRoomTypeInTheHotelOnTheDates(String rType, String hId, String dateFrom, String dateTo) {
+    @When("the employee <{int}> books the room type {string} in the hotel {string} on the dates {string} to {string}")
+    public void theEmployeeBooksTheRoomTypeInTheHotelOnTheDates(int id, String rType, String hId, String dateFrom, String dateTo) {
         checkIn = LocalDate.parse(dateFrom);
         checkOut = LocalDate.parse(dateTo);
-        booking = bookingService.book(employeeId, HotelId.of(hId), roomTypeFrom(rType), checkIn, checkOut);
+        booking = bookingService.book(EmployeeId.of(id), HotelId.of(hId), roomTypeFrom(rType), checkIn, checkOut);
     }
 
     @And("the hotel {string} providing the following rooms")
